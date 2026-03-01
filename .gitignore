@@ -1,0 +1,10 @@
+# IntelliJ specific files
+.idea/
+*.iml
+
+# Compiled output
+target/
+out/
+
+# Mac system files
+.DS_Store
