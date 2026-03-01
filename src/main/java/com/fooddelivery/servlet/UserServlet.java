@@ -1,39 +1,44 @@
 package com.fooddelivery.servlet;
 
 import com.fooddelivery.model.User;
-import java.io.*;
-import jakarta.servlet.ServletException;
+import java.io.File;
+import java.io.FileWriter;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-// This annotation links the HTML form to this specific Java file
+
 @WebServlet("/UserServlet")
 public class UserServlet extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 1. Grab what the user typed in the HTML form
-        String userParam = request.getParameter("username");
-        String emailParam = request.getParameter("email");
-        String passParam = request.getParameter("password");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 1. Get the data from the HTML form
+            String userParam = request.getParameter("username");
+            String emailParam = request.getParameter("email");
+            String passParam = request.getParameter("password");
 
-        // 2. Create the OOP User Object
-        User newUser = new User(userParam, emailParam, passParam);
+            // 2. Create the OOP Object
+            User newUser = new User(userParam, emailParam, passParam);
 
-        // 3. File Handling: Create a permanent folder in the user's home directory
-        String userHome = System.getProperty("user.home"); // Gets C:\Users\YourName automatically
-        File dataFolder = new File(userHome, "FoodDeliveryData");
+            // 3. Find the folder and file
+            String folderPath = System.getProperty("user.home") + "/FoodDeliveryData";
+            File folder = new File(folderPath);
+            if (!folder.exists()) {
+                folder.mkdir(); // Make the folder if it is missing
+            }
+            File myFile = new File(folder, "users.txt");
 
-        if (!dataFolder.exists()) {
-            dataFolder.mkdirs();
-        }
+            // 4. Write to the file ('true' means add to the bottom, don't overwrite)
+            FileWriter writer = new FileWriter(myFile, true);
+            writer.write(newUser.getUsername() + "," + newUser.getEmail() + "," + newUser.getPassword() + "\n");
+            writer.close(); // Always close it!
 
-        File file = new File(dataFolder, "users.txt");
+            // 5. Go back to login
+            response.sendRedirect("login.jsp");
 
-        try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) {
-            writer.println(newUser.getUsername() + "," + newUser.getEmail() + "," + newUser.getPassword());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
         }
     }
 }
