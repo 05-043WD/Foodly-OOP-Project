@@ -25,7 +25,7 @@ Our team consists of 6 members, each handling a specific component of the system
 ## 🚀 How to Run Locally
 1. **Clone the repository:**
    ```bash
-   https://github.com/Foodly-05-049WD-OOP-Project/Foodly-OOP-Project.git
+   https://github.com/05-043WD/Foodly-OOP-Project.git
 2. Open the project in IntelliJ IDEA Ultimate.
 
 3. Configure Tomcat: Add a local Apache Tomcat Server in your Run Configurations.
