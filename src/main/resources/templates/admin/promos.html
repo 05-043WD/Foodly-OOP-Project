@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!-- Module: Member 5 - Promotions Management -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>Promotions</title>
+</head>
+<body class="page-enter">
+
+<div th:replace="~{layout :: navbar}"></div>
+
+<div class="admin-wrapper">
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;">
+    <!-- UI Element 1: List View with Add Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Promotions & Discounts</h2>
+        <!-- BUTTON TO TRIGGER ADD MODAL -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPromoModal">
+            + Add New Promotion
+        </button>
+    </div>
+
+    <!-- MAIN LIST UI -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div th:if="${successMessage}" class="alert alert-success mt-2" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger mt-2" th:text="${errorMessage}"></div>
+
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>Promo ID</th>
+                    <th>Name/Description</th>
+                    <th>Code</th>
+                    <th>Discount (%)</th>
+                    <th>Active Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="promo : ${promos}">
+                    <td th:text="${promo.id}">PRM-123</td>
+                    <td th:text="${promo.name}">Summer Sale</td>
+                    <td th:text="${promo.promoCode}">SUMMER20</td>
+                    <td th:text="${promo.discountPercentage + '%'}">20.0%</td>
+                    <td>
+                        <span class="badge" th:classappend="${promo.active ? 'bg-success' : 'bg-secondary'}" th:text="${promo.active ? 'Active' : 'Inactive'}">Active</span>
+                    </td>
+                    <td class="text-end">
+                        <!-- BUTTON TO TRIGGER EDIT MODAL -->
+                        <!-- UI Element 3 triggers modifying values via javascript -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#editPromoModal"
+                                th:data-id="${promo.id}"
+                                th:data-name="${promo.name}"
+                                th:data-code="${promo.promoCode}"
+                                th:data-discount="${promo.discountPercentage}"
+                                th:data-active="${promo.active}">
+                            Edit Value
+                        </button>
+                        <a th:href="@{/admin/promos/delete/{id}(id=${promo.id})}" 
+                           class="btn btn-sm btn-outline-danger ms-1"
+                           onclick="return confirm('Are you sure you want to delete this promotion completely?');">Delete</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(promos)}">
+                    <td colspan="6" class="text-center text-muted">No promotions available.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- UI Element 2: Action Modal for ADDING -->
+    <div class="modal fade" id="addPromoModal" tabindex="-1" aria-labelledby="addPromoModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form class="modal-content" th:action="@{/admin/promos/add}" method="post" th:object="${newPromo}">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addPromoModalLabel">Add New Promotion</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="name" class="form-label">Description (Name)</label>
+              <input type="text" class="form-control" id="name" th:field="*{name}" required placeholder="e.g. Student Discount">
+            </div>
+            <div class="mb-3">
+              <label for="promoCode" class="form-label">Discount Code</label>
+              <input type="text" class="form-control" id="promoCode" th:field="*{promoCode}" required placeholder="STUDENT15">
+            </div>
+            <div class="mb-3">
+              <label for="discountPercentage" class="form-label">Discount Percentage (%)</label>
+              <input type="number" step="0.1" class="form-control" id="discountPercentage" th:field="*{discountPercentage}" required>
+            </div>
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="isActive" th:field="*{active}" value="true" checked>
+              <label class="form-check-label" for="isActive">Promo is currently active</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add Promotion</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- UI Element 3: Action Modal for EDITING -->
+    <div class="modal fade" id="editPromoModal" tabindex="-1" aria-labelledby="editPromoModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form class="modal-content" th:action="@{/admin/promos/edit}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editPromoModalLabel">Edit Promotion</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" id="edit-id">
+            
+            <div class="mb-3">
+              <label for="edit-name" class="form-label">Description (Name)</label>
+              <input type="text" class="form-control" id="edit-name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit-code" class="form-label">Discount Code</label>
+              <input type="text" class="form-control" id="edit-code" name="promoCode" required>
+            </div>
+            <div class="mb-3">
+              <label for="edit-discount" class="form-label">Discount Percentage (%)</label>
+              <input type="number" step="0.1" class="form-control" id="edit-discount" name="discountPercentage" required>
+            </div>
+            <div class="form-check form-switch mb-3">
+              <!-- Using hidden input workaround for checkboxes that don't get sent when empty -->
+              <input type="hidden" name="isActive" value="false">
+              <input class="form-check-input" type="checkbox" id="edit-active" name="isActive" value="true">
+              <label class="form-check-label" for="edit-active">Activate Promotion</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Simple JavaScript to dynamically map edit parameters for Modals -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const editPromoModal = document.getElementById('editPromoModal');
+        if (editPromoModal) {
+            editPromoModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                const button = event.relatedTarget;
+                
+                // Read the 'data-*' attributes from the clicked button
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name');
+                const code = button.getAttribute('data-code');
+                const discount = button.getAttribute('data-discount');
+                const active = button.getAttribute('data-active') === 'true';
+                
+                // Set the modal's input fields (JavaScript targets by element ID)
+                editPromoModal.querySelector('#edit-id').value = id;
+                editPromoModal.querySelector('#edit-name').value = name;
+                editPromoModal.querySelector('#edit-code').value = code;
+                editPromoModal.querySelector('#edit-discount').value = discount;
+                editPromoModal.querySelector('#edit-active').checked = active;
+            });
+        }
+      });
+    </script>
+</div>
+</div>
+
+<div th:replace="~{layout :: footer}"></div>
+</body>
+</html>
