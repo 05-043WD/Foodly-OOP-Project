@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<!-- Module: Member 4 - Staff Management -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>Staff Management</title>
+</head>
+<body class="page-enter">
+
+<div th:replace="~{layout :: navbar}"></div>
+
+<div class="admin-wrapper">
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Staff Management Dashboard</h2>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+            + Add New Staff
+        </button>
+    </div>
+
+    <!-- MAIN LIST -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div th:if="${successMessage}" class="alert alert-success mt-2" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger mt-2" th:text="${errorMessage}"></div>
+
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Shift</th>
+                    <th>Salary</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="staff : ${staffList}">
+                    <td th:text="${staff.id}">STF-1</td>
+                    <td th:text="${staff.name}">John</td>
+                    <td th:text="${staff.email}">test@test</td>
+                    <td th:text="${staff.role}">Chef</td>
+                    <td th:text="${staff.shift}">Morning</td>
+                    <td th:text="${'$' + staff.salary}">$3000</td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                data-bs-toggle="modal" data-bs-target="#editStaffModal"
+                                th:data-id="${staff.id}" th:data-name="${staff.name}"
+                                th:data-email="${staff.email}" th:data-role="${staff.role}"
+                                th:data-shift="${staff.shift}" th:data-salary="${staff.salary}">
+                            Edit Value
+                        </button>
+                        <a th:href="@{/admin/staff/delete/{id}(id=${staff.id})}" 
+                           class="btn btn-sm btn-outline-danger ms-1"
+                           onclick="return confirm('Remove this staff member?');">Remove</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(staffList)}">
+                    <td colspan="7" class="text-center text-muted">No staff found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ADD MODAL -->
+    <div class="modal fade" id="addStaffModal" tabindex="-1">
+      <div class="modal-dialog">
+        <form class="modal-content" th:action="@{/admin/staff/add}" method="post" th:object="${newStaff}">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Staff</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" th:field="*{name}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" th:field="*{email}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Role</label>
+              <input type="text" class="form-control" th:field="*{role}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Shift</label>
+              <input type="text" class="form-control" th:field="*{shift}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Salary ($)</label>
+              <input type="number" step="0.01" class="form-control" th:field="*{salary}" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div class="modal fade" id="editStaffModal" tabindex="-1">
+      <div class="modal-dialog">
+        <form class="modal-content" th:action="@{/admin/staff/edit}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Staff Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" id="edit-id">
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" id="edit-name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" id="edit-email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Role</label>
+              <input type="text" class="form-control" id="edit-role" name="role" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Shift</label>
+              <input type="text" class="form-control" id="edit-shift" name="shift" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Salary ($)</label>
+              <input type="number" step="0.01" class="form-control" id="edit-salary" name="salary" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const editStaffModal = document.getElementById('editStaffModal');
+        if (editStaffModal) {
+            // Wait for the modal trigger event
+            editStaffModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                // Bind data values back to the DOM elements by targeting specific IDs
+                editStaffModal.querySelector('#edit-id').value = button.getAttribute('data-id');
+                editStaffModal.querySelector('#edit-name').value = button.getAttribute('data-name');
+                editStaffModal.querySelector('#edit-email').value = button.getAttribute('data-email');
+                editStaffModal.querySelector('#edit-role').value = button.getAttribute('data-role');
+                editStaffModal.querySelector('#edit-shift').value = button.getAttribute('data-shift');
+                editStaffModal.querySelector('#edit-salary').value = button.getAttribute('data-salary');
+            });
+        }
+      });
+    </script>
+</div>
+</div>
+
+<div th:replace="~{layout :: footer}"></div>
+</body>
+</html>
