@@ -1,0 +1,5 @@
+FOOD002|Margherita Pizza|Stone-baked pizza with San Marzano tomato & mozzarella|12.49|Pizza|https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400|true
+FOOD003|Salmon Sushi Roll|Fresh Atlantic salmon over seasoned rice, 8 pieces|14.99|Sushi|https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400|true
+FOOD004|Grilled Chicken Pasta|Penne with grilled chicken breast in creamy Alfredo sauce|11.49|Pasta|https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400|true
+FOOD005|Veggie Tacos|Three soft tacos with seasoned veggies, salsa & guacamole|9.99|Mexican|https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400|true
+FOOD006|Chocolate Lava Cake|Warm chocolate cake with a gooey molten centre & vanilla ice cream|6.99|Desserts|https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400|true
