@@ -1,0 +1,3 @@
+USR001|John Doe|john@example.com|555-0100|123 Maple St|USER|password123
+USR002|Admin User|admin@foodly.com|555-0999|Foodly HQ|ADMIN|admin123
+USR058174|test|test@mail.com|0704028910|18, Madalanda Waththa, Wedagama, Pasyala|USER|test123
