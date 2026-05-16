@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>Foodly</title>
+</head>
+<body class="page-enter">
+
+    <!-- Include Navbar -->
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 10;">
+            <h1 class="hero-title">Delicious food,<br>delivered to <span>your door.</span></h1>
+            <p class="hero-subtitle">Experience the finest culinary delights crafted with fresh ingredients and delivered with speed. Live well, eat better.</p>
+            <a href="#menu" class="hero-btn">Explore Menu</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main id="menu" style="max-width: 1200px; margin: 4rem auto; padding: 0 1.5rem;">
+        
+        <h2 class="section-title">Our Menu</h2>
+        <p class="section-subtitle" style="margin-bottom: 1rem;">Handpicked favorites for every craving</p>
+
+        <!-- Category Filters -->
+        <div class="category-tabs">
+            <a th:href="@{/}" class="cat-tab" th:classappend="${activeCategory == 'All'} ? 'active' : ''">All</a>
+            <th:block th:each="cat : ${categories}">
+                <a th:href="@{/(category=${cat})}" class="cat-tab" 
+                   th:classappend="${activeCategory == cat} ? 'active' : ''" 
+                   th:text="${cat}">Category</a>
+            </th:block>
+        </div>
+
+        <!-- Food Grid -->
+        <div class="food-grid">
+            <div th:each="item : ${foodItems}" class="food-card" th:if="${item.available}">
+                
+                <div class="food-card-img-wrap">
+                    <span class="food-card-badge" th:text="${item.category}">Category</span>
+                    <img th:src="${item.imageUrl}" th:alt="${item.name}" class="food-card-img">
+                </div>
+                
+                <div class="food-card-body">
+                    <h3 class="food-card-title" th:text="${item.name}">Item Name</h3>
+                    <p class="food-card-desc" th:text="${item.description}">Description</p>
+                    
+                    <div class="food-card-footer" style="flex-wrap: wrap; gap: 0.5rem; justify-content: space-between;">
+                        <div class="food-price">$<span th:text="${#numbers.formatDecimal(item.price, 1, 2)}">0.00</span></div>
+                        <form th:action="@{/cart/add}" method="post" style="display:flex; gap:0.5rem; margin:0; align-items: center;">
+                            <input type="hidden" name="foodId" th:value="${item.id}" />
+                            <input type="number" name="quantity" value="1" min="1" class="qty-input" style="width: 60px; padding: 0.4rem; border: 1px solid var(--border); border-radius: 4px;" />
+                            <button type="submit" class="btn-order" style="border:none; cursor:pointer;">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(foodItems)}" style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem;">
+                <h3 style="color: var(--gray); font-weight: 500;">No food items available at the moment.</h3>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Include Footer -->
+    <div th:replace="~{layout :: footer}"></div>
+
+</body>
+</html>
