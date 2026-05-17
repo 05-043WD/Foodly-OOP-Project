@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>Register - Foodly</title>
+</head>
+<body class="page-enter">
+
+    <!-- Include Navbar -->
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            
+            <div class="auth-card-logo">Food<span>ly</span></div>
+            <p class="auth-card-subtitle">Create an account to start ordering</p>
+            
+            <!-- Error Message -->
+            <div th:if="${errorMessage}" class="alert-foodly alert-error-foodly" style="margin-bottom: 1.5rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span th:text="${errorMessage}">Error Message</span>
+            </div>
+
+            <form th:action="@{/register}" th:object="${user}" method="post">
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control" required placeholder="John Doe" style="width: 100%;">
+                </div>
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control" required placeholder="john@example.com" style="width: 100%;">
+                </div>
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" id="phone" th:field="*{phone}" class="form-control" required placeholder="+1 (555) 000-0000" style="width: 100%;">
+                </div>
+                
+                <div style="margin-bottom: 2rem;">
+                    <label for="address" class="form-label">Delivery Address</label>
+                    <textarea id="address" th:field="*{address}" class="form-control" required rows="3" placeholder="123 Main St, Apt 4B..." style="width: 100%; resize: none;"></textarea>
+                </div>
+                
+                <div style="margin-bottom: 2rem;">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control" required placeholder="••••••••" style="width: 100%;">
+                </div>
+                
+                <button type="submit" class="btn-primary-foodly">Create Account</button>
+                
+            </form>
+            
+        </div>
+    </div>
+
+    <!-- Include Footer -->
+    <div th:replace="~{layout :: footer}"></div>
+
+</body>
+</html>
