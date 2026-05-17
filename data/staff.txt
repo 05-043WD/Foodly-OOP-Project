@@ -1,0 +1,2 @@
+STF-001|Maria Gomez|maria@foodly.com|Head Chef|Morning|3500.0
+STF-002|James Lee|james@foodly.com|Delivery Driver|Evening|2200.0
