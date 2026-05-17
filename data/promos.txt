@@ -1,0 +1,2 @@
+PRM-001|Student Discount|STUDENT15|15.0|false
+PRM-002|Weekend Special|WEEKEND10|10.0|false
