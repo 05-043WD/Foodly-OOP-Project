@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>Edit Food Item</title>
+</head>
+<body class="page-enter">
+
+    <!-- Include Navbar -->
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="admin-wrapper">
+        <div style="max-width: 700px; margin: 0 auto; padding: 0 1.5rem;">
+            
+            <div style="margin-bottom: 2rem;">
+                <a th:href="@{/admin}" style="color: var(--gray); text-decoration: none; font-size: 0.9rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.3rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Back to Dashboard
+                </a>
+            </div>
+
+            <div class="form-card">
+                <h2 class="form-card-title" th:text="'Edit ' + ${foodItem.name}">Edit Food Item</h2>
+                
+                <form th:action="@{/admin/edit-food}" th:object="${foodItem}" method="post">
+                    <!-- Hidden field to pass the food item ID for Update operation -->
+                    <input type="hidden" th:field="*{id}">
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                        <div>
+                            <label for="name" class="form-label">Item Name</label>
+                            <input type="text" id="name" th:field="*{name}" class="form-control" required style="width: 100%;">
+                        </div>
+                        <div>
+                            <label for="category" class="form-label">Category</label>
+                            <select id="category" th:field="*{category}" class="form-select" required style="width: 100%;">
+                                <option value="Burgers">Burgers</option>
+                                <option value="Pizza">Pizza</option>
+                                <option value="Sushi">Sushi</option>
+                                <option value="Pasta">Pasta</option>
+                                <option value="Mexican">Mexican</option>
+                                <option value="Desserts">Desserts</option>
+                                <option value="Drinks">Drinks</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+                        <div>
+                            <label for="price" class="form-label">Price ($)</label>
+                            <input type="number" step="0.01" min="0" id="price" th:field="*{price}" class="form-control" required style="width: 100%;">
+                        </div>
+                        <div>
+                            <label class="form-label">Availability</label>
+                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                                <label style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.9rem; cursor: pointer;">
+                                    <input type="radio" th:field="*{available}" value="true" required> Available
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.9rem; cursor: pointer;">
+                                    <input type="radio" th:field="*{available}" value="false" required> Out of Stock
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.25rem;">
+                        <label for="imageUrl" class="form-label">Image URL</label>
+                        <input type="url" id="imageUrl" th:field="*{imageUrl}" class="form-control" required style="width: 100%;">
+                        
+                        <!-- Image Preview -->
+                        <div style="margin-top: 0.75rem;">
+                            <img th:src="${foodItem.imageUrl}" alt="Preview" style="height: 100px; border-radius: var(--radius-sm); border: 1px solid var(--border); object-fit: cover;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea id="description" th:field="*{description}" class="form-control" required rows="3" style="width: 100%; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <a th:href="@{/admin}" class="btn-edit" style="text-decoration: none; padding: 0.8rem 1.5rem;">Cancel</a>
+                        <button type="submit" class="btn-primary-foodly" style="width: auto; padding: 0.8rem 2rem;">Update Item</button>
+                    </div>
+                    
+                </form>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Include Footer -->
+    <div th:replace="~{layout :: footer}"></div>
+
+</body>
+</html>
