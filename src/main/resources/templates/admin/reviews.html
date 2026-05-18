@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!-- Module: Member 6 - Review Moderation -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>Reviews</title>
+</head>
+<body class="page-enter">
+
+<div th:replace="~{layout :: navbar}"></div>
+
+<div class="admin-wrapper">
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Customer Reviews & Feedback</h2>
+        <!-- Modal Trigger for Add -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addReviewModal">
+            + Post Review
+        </button>
+    </div>
+
+    <!-- MAIN VIEW -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div th:if="${successMessage}" class="alert alert-success mt-2" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger mt-2" th:text="${errorMessage}"></div>
+
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>Review ID</th>
+                    <th>Author (Name)</th>
+                    <th>Review Comments</th>
+                    <th>Rating (1-5)</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="rev : ${reviews}">
+                    <td th:text="${rev.id}">REV-123</td>
+                    <td th:text="${rev.authorName}">Alice</td>
+                    <td th:text="${rev.reviewText}">Great Food!</td>
+                    <td>
+                        <span class="badge bg-warning text-dark" th:text="${rev.rating} + ' Stars'">5 Stars</span>
+                    </td>
+                    <td class="text-end">
+                        <a th:href="@{/admin/reviews/delete/{id}(id=${rev.id})}" 
+                           class="btn btn-sm btn-outline-danger ms-1"
+                           onclick="return confirm('Delete this review permanently?');">Moderate/Remove Review</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(reviews)}">
+                    <td colspan="5" class="text-center text-muted">No reviews yet.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ADD MODAL -->
+    <div class="modal fade" id="addReviewModal" tabindex="-1">
+      <div class="modal-dialog">
+        <form class="modal-content" th:action="@{/admin/reviews/add}" method="post" th:object="${newReview}">
+          <div class="modal-header">
+            <h5 class="modal-title">Post a Review</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Your Name</label>
+              <input type="text" class="form-control" th:field="*{authorName}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Review</label>
+              <textarea class="form-control" th:field="*{reviewText}" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Rating (1-5)</label>
+              <input type="number" min="1" max="5" class="form-control" th:field="*{rating}" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+</div>
+</div>
+
+<div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

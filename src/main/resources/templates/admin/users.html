@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!-- Module: Member 1 - User Management -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>User Management</title>
+</head>
+<body class="page-enter">
+
+<div th:replace="~{layout :: navbar}"></div>
+
+<div class="admin-wrapper">
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>User Management Dashboard</h2>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            + Register New User
+        </button>
+    </div>
+
+    <!-- MAIN LIST UI -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div th:if="${successMessage}" class="alert alert-success mt-2" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger mt-2" th:text="${errorMessage}"></div>
+
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}">USR-123</td>
+                    <td th:text="${user.name}">John Doe</td>
+                    <td th:text="${user.email}">user@test.com</td>
+                    <td>
+                        <span class="badge" th:classappend="${user.role == 'ADMIN' ? 'bg-danger' : 'bg-primary'}" th:text="${user.role}">USER</span>
+                    </td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#editUserModal"
+                                th:data-id="${user.id}"
+                                th:data-name="${user.name}"
+                                th:data-email="${user.email}"
+                                th:data-phone="${user.phone}"
+                                th:data-address="${user.address}"
+                                th:data-role="${user.role}">
+                            Update Profile
+                        </button>
+                        <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" 
+                           class="btn btn-sm btn-outline-danger ms-1"
+                           onclick="return confirm('Delete this account permanently?');">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL 1: ADD USER -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <form class="modal-content" th:action="@{/admin/users/add}" method="post" th:object="${newUser}">
+          <div class="modal-header">
+            <h5 class="modal-title">Register New User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" th:field="*{name}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" th:field="*{email}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="text" class="form-control" th:field="*{password}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Role</label>
+              <select class="form-select" th:field="*{role}">
+                <option value="USER">User</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Register</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 2: EDIT USER -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <form class="modal-content" th:action="@{/admin/users/edit}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title">Update Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" id="edit-id">
+            <input type="hidden" name="password" value=""> <!-- Maintain unchanged password logic -->
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" id="edit-name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" id="edit-email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Phone</label>
+              <input type="text" class="form-control" id="edit-phone" name="phone">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <textarea class="form-control" id="edit-address" name="address"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Role</label>
+              <select class="form-select" id="edit-role" name="role">
+                <option value="USER">User</option>
+                <option value="ADMIN">Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Simple JavaScript to dynamically map edit parameters for Modals -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const editUserModal = document.getElementById('editUserModal');
+        if (editUserModal) {
+            editUserModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                const button = event.relatedTarget;
+                
+                // Set the modal's input fields (JavaScript targets by element ID)
+                editUserModal.querySelector('#edit-id').value = button.getAttribute('data-id');
+                editUserModal.querySelector('#edit-name').value = button.getAttribute('data-name');
+                editUserModal.querySelector('#edit-email').value = button.getAttribute('data-email');
+                editUserModal.querySelector('#edit-phone').value = button.getAttribute('data-phone');
+                editUserModal.querySelector('#edit-address').value = button.getAttribute('data-address');
+                editUserModal.querySelector('#edit-role').value = button.getAttribute('data-role');
+            });
+        }
+      });
+    </script>
+</div>
+</div>
+
+<div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

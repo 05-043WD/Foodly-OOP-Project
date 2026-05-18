@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!-- Module: Member 3 - Order Tracking -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>Order Management</title>
+</head>
+<body class="page-enter">
+
+<div th:replace="~{layout :: navbar}"></div>
+
+<div class="admin-wrapper">
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Order Tracking Dashboard</h2>
+    </div>
+
+    <!-- MAIN LIST UI -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div th:if="${successMessage}" class="alert alert-success mt-2" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger mt-2" th:text="${errorMessage}"></div>
+
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Address</th>
+                    <th>Summary</th>
+                    <th>Total ($)</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.id}">ORD-123</td>
+                    <td>
+                        <div style="font-weight: 600;" th:text="${order.name}"></div>
+                        <div style="font-size: 0.85rem; color: #6c757d;" th:text="${order.userEmail}"></div>
+                    </td>
+                    <td th:text="${order.deliveryAddress}">123 Lane</td>
+                    <td th:text="${order.itemsSummary}">1x Burger</td>
+                    <td style="font-weight: bold; color: var(--accent);" th:text="${order.totalAmount}">15.99</td>
+                    <td>
+                        <span class="badge" 
+                              th:classappend="${order.status == 'Pending' ? 'bg-warning' : (order.status == 'Delivered' ? 'bg-success' : 'bg-primary')}"
+                              th:text="${order.status}">Pending</span>
+                    </td>
+                    <td class="text-end">
+                        <!-- BUTTON TO TRIGGER EDIT MODAL -->
+                        <!-- Data attributes are used to pass order details to the modal via JavaScript -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#editOrderModal"
+                                th:data-id="${order.id}"
+                                th:data-status="${order.status}">
+                            Edit Status
+                        </button>
+                        <a th:href="@{/admin/orders/delete/{id}(id=${order.id})}" 
+                           class="btn btn-sm btn-outline-danger ms-1"
+                           onclick="return confirm('Are you sure you want to cancel this order?');">Cancel</a>
+                    </td>
+                </tr>
+                <!-- Empty state -->
+                <tr th:if="${#lists.isEmpty(orders)}">
+                    <td colspan="7" class="text-center text-muted">No orders placed yet.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL 2: EDIT ORDER -->
+    <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form class="modal-content" th:action="@{/admin/orders/edit}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editOrderModalLabel">Update Order Status</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Hidden ID Field for Update -->
+            <input type="hidden" name="id" id="edit-id">
+            
+            <div class="mb-3">
+              <label for="edit-status" class="form-label">Status</label>
+              <select class="form-select" id="edit-status" name="status">
+                <option value="Pending">Pending</option>
+                <option value="Preparing">Preparing</option>
+                <option value="Out for Delivery">Out for Delivery</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Simple JavaScript to dynamically map edit parameters for Modals (Easy for Viva explanation) -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const editOrderModal = document.getElementById('editOrderModal');
+        if (editOrderModal) {
+            // Triggered when Edit modal is shown
+            editOrderModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                const button = event.relatedTarget;
+                
+                // Extract info from data-* attributes
+                const id = button.getAttribute('data-id');
+                const status = button.getAttribute('data-status');
+                
+                // Update the modal's input fields
+                editOrderModal.querySelector('#edit-id').value = id;
+                editOrderModal.querySelector('#edit-status').value = status;
+            });
+        }
+      });
+    </script>
+</div>
+</div>
+
+<div th:replace="~{layout :: footer}"></div>
+</body>
+</html>
