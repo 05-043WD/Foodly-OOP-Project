@@ -1,0 +1,8 @@
+ORD-28CCD2|test|test@mail.com|18, Madalanda Waththa, Wedagama, Pasyala|1x Salmon Sushi Roll|14.99|Delivered
+ORD-D0DFDC|Admin User|admin@foodly.com|Foodly HQ|2x Margherita Pizza|24.98|Preparing
+ORD-8FA244|Admin User|admin@foodly.com|Foodly HQ|1x Salmon Sushi Roll|14.99|Pending
+ORD-0BEB40|test1|test1@mail.com|18, Madalanda Waththa, Wedagama, Pasyala|2x Margherita Pizza|24.98|Out for Delivery
+ORD-502931|Admin User|admin@foodly.com|Foodly HQ|1x Salmon Sushi Roll|14.99|Pending
+ORD-7DA7B2|Admin User|admin@foodly.com|Foodly HQ|2x Margherita Pizza|24.98|Pending
+ORD-01B8EE|Admin User|admin@foodly.com|Foodly HQ|3x Chocolate Lava Cake|20.97|Pending
+ORD-7011F0|Admin User|admin@foodly.com|Foodly HQ|1x Salmon Sushi Roll|14.99|Pending
