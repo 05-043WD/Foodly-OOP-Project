@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- Module: Member 3 - Order Tracking (Cart UI) -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>Your Cart</title>
+</head>
+<body class="page-enter">
+
+<div th:replace="~{layout :: navbar}"></div>
+
+<div style="max-width: 900px; margin: 2rem auto; padding: 0 1.5rem;">
+    <h1 style="font-size: 2rem; font-weight: 800; color: var(--charcoal); margin-bottom: 2rem;">Your Cart</h1>
+    
+    <div th:if="${successMessage}" class="alert-foodly alert-success-foodly" style="margin-bottom: 1.5rem;">
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert-foodly alert-error-foodly" style="margin-bottom: 1.5rem;">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Empty Cart -->
+    <div th:if="${#lists.isEmpty(cartItems)}" style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <h3 style="color: var(--gray); margin-bottom: 1rem;">Your cart is empty.</h3>
+        <a th:href="@{/}" class="btn-primary-foodly" style="display: inline-block; padding: 0.8rem 2rem; text-decoration: none;">Browse Menu</a>
+    </div>
+
+    <!-- Cart Table -->
+    <div th:if="${!#lists.isEmpty(cartItems)}" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 2rem;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead style="background: var(--off-white); border-bottom: 2px solid rgba(0,0,0,0.05);">
+                <tr>
+                    <th style="padding: 1.2rem; text-align: left; color: var(--gray); font-size: 0.9rem; text-transform: uppercase;">Item Name</th>
+                    <th style="padding: 1.2rem; text-align: center; color: var(--gray); font-size: 0.9rem; text-transform: uppercase;">Price</th>
+                    <th style="padding: 1.2rem; text-align: center; color: var(--gray); font-size: 0.9rem; text-transform: uppercase;">Quantity</th>
+                    <th style="padding: 1.2rem; text-align: right; color: var(--gray); font-size: 0.9rem; text-transform: uppercase;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartItems}" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
+                    <td style="padding: 1.5rem 1.2rem; font-weight: 600; color: var(--charcoal);" th:text="${item.name}">Burger</td>
+                    <td style="padding: 1.5rem 1.2rem; text-align: center; color: var(--gray);" th:text="'$' + ${#numbers.formatDecimal(item.price, 1, 2)}">$10.00</td>
+                    
+                    <td style="padding: 1.5rem 1.2rem; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.8rem;">
+                            <form th:action="@{/cart/update}" method="post" style="margin: 0;">
+                                <input type="hidden" name="foodId" th:value="${item.foodId}">
+                                <input type="hidden" name="action" value="minus">
+                                <button type="submit" style="background: var(--off-white); border: 1px solid var(--border); border-radius: 4px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--charcoal); transition: 0.2s;">-</button>
+                            </form>
+                            
+                            <span style="font-weight: 600; width: 20px; text-align: center;" th:text="${item.quantity}">1</span>
+                            
+                            <form th:action="@{/cart/update}" method="post" style="margin: 0;">
+                                <input type="hidden" name="foodId" th:value="${item.foodId}">
+                                <input type="hidden" name="action" value="plus">
+                                <button type="submit" style="background: var(--off-white); border: 1px solid var(--border); border-radius: 4px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--charcoal); transition: 0.2s;">+</button>
+                            </form>
+                        </div>
+                    </td>
+                    
+                    <td style="padding: 1.5rem 1.2rem; text-align: right; font-weight: 700; color: var(--accent);" th:text="'$' + ${#numbers.formatDecimal(item.subTotal, 1, 2)}">$10.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Cart Summary -->
+    <div th:if="${!#lists.isEmpty(cartItems)}" style="display: flex; flex-direction: column; align-items: flex-end; gap: 1rem;">
+        <div style="font-size: 1.2rem; font-weight: 600; color: var(--gray);">
+            Total: <span style="font-size: 1.8rem; font-weight: 800; color: var(--charcoal); margin-left: 0.5rem;" th:text="'$' + ${#numbers.formatDecimal(cartTotal, 1, 2)}">$10.00</span>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <a th:href="@{/}" class="btn-edit" style="text-decoration: none; padding: 1rem 2rem;">Continue Shopping</a>
+            <a th:href="@{/cart/checkout}" class="btn-primary-foodly" style="text-decoration: none; padding: 1rem 2.5rem; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(255,107,107,0.3);">Proceed to Checkout</a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout :: footer}"></div>
+
+</body>
+</html>

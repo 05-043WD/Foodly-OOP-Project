@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!-- Module: Member 3 - Order Tracking (Checkout UI) -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${pageTitle})}">
+    <title>Checkout</title>
+</head>
+<body class="page-enter">
+
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div style="max-width: 800px; margin: 2rem auto; padding: 0 1.5rem;">
+        
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--charcoal); margin-bottom: 2rem;">Secure Checkout</h1>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+            
+            <!-- Order Summary Sidebar -->
+            <div style="background: var(--off-white); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(0,0,0,0.05);">
+                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--charcoal); margin-bottom: 1rem; border-bottom: 2px solid rgba(0,0,0,0.05); padding-bottom: 0.5rem;">Order Summary</h3>
+                
+                <ul style="list-style: none; padding: 0; margin: 0; margin-bottom: 1rem;">
+                    <li th:each="item : ${cartItems}" style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 0.95rem; color: var(--gray);">
+                        <span>
+                            <span style="font-weight: 600; color: var(--charcoal);" th:text="${item.quantity} + 'x'">1x</span>
+                            <span th:text="${item.name}">Burger</span>
+                        </span>
+                        <span style="font-weight: 500;" th:text="'$' + ${#numbers.formatDecimal(item.subTotal, 1, 2)}">$10.00</span>
+                    </li>
+                </ul>
+                
+                <div style="display: flex; justify-content: space-between; border-top: 2px solid rgba(0,0,0,0.05); padding-top: 1rem; font-size: 1.2rem; font-weight: 700; color: var(--charcoal);">
+                    <span>Total</span>
+                    <span style="color: var(--accent);" th:text="'$' + ${#numbers.formatDecimal(cartTotal, 1, 2)}">$10.00</span>
+                </div>
+            </div>
+
+            <!-- Delivery Details Form -->
+            <div class="form-card" style="margin-bottom: 0;">
+                <h2 class="form-card-title">Delivery Details</h2>
+                
+                <!-- Action: When Confirm Order is clicked, POST to /cart/checkout/confirm -->
+                <form th:action="@{/cart/checkout/confirm}" method="post">
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="form-label" style="font-size: 0.9rem;">Full Name (from Account)</label>
+                        <input type="text" class="form-control" th:value="${user.name}" readonly style="background: var(--off-white); cursor: not-allowed; width: 100%;">
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="form-label" style="font-size: 0.9rem;">Email Address (for Receipt)</label>
+                        <input type="email" class="form-control" th:value="${user.email}" readonly style="background: var(--off-white); cursor: not-allowed; width: 100%;">
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <label for="deliveryAddress" class="form-label" style="font-size: 1rem; font-weight: 600;">Delivery Address</label>
+                        <p style="font-size: 0.85rem; color: var(--gray-light); margin-bottom: 0.5rem;">Review and update where we should deliver your food.</p>
+                        <!-- Editable Address Field -->
+                        <textarea id="deliveryAddress" name="deliveryAddress" class="form-control" required rows="3" th:text="${user.address}" style="width: 100%; border-color: var(--primary); background: #fafcff;"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary-foodly" style="width: 100%; padding: 1.2rem; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(255,107,107,0.3);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Confirm Order
+                    </button>
+                    
+                </form>
+            </div>
+            
+        </div>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+
+</body>
+</html>

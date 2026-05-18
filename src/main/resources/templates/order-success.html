@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Order Confirmed')}">
+    <title>Order Confirmed</title>
+</head>
+<body class="page-enter">
+
+    <!-- Include Navbar -->
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="auth-wrapper" style="background: var(--off-white); min-height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center;">
+        
+        <div class="auth-card" style="text-align: center; border-radius: var(--radius-lg); padding: 4rem 2.5rem; max-width: 500px; box-shadow: var(--shadow-lg);">
+            
+            <div style="width: 80px; height: 80px; background: rgba(52,199,89,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            
+            <h1 style="font-size: 2rem; font-weight: 800; color: var(--charcoal); margin-bottom: 0.5rem; letter-spacing: -0.5px;">Order Confirmed!</h1>
+            
+            <p style="color: var(--gray); font-size: 1.05rem; line-height: 1.6; margin-bottom: 2.5rem;">
+                Your delicious food is being prepared. It will be delivered to your address shortly.
+            </p>
+            
+            <a href="/" class="btn-primary-foodly" style="display: inline-block; padding: 0.85rem 2rem; text-decoration: none; width: auto;">Back to Menu</a>
+            
+        </div>
+        
+    </div>
+
+    <!-- Include Footer -->
+    <div th:replace="~{layout :: footer}"></div>
+
+</body>
+</html>
